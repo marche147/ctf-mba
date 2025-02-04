@@ -9,6 +9,7 @@ BITSET = {
   'y': [0, 1, 0, 1],
 }
 
+## TODO: maybe we make a basis that is larger abs(v) so that 10**8*abs(v) can overflow?
 Rule = r"""
 ?start: expr -> expression
 
@@ -17,8 +18,8 @@ Rule = r"""
     | expr "-" coterm -> sub
 
 ?coterm: term -> term
-    | NUMBER "*" term -> mul             
-    | NUMBER -> const
+    | integer "*" term -> mul             
+    | integer -> const
               
 ?term: "(" term ")"
     | "~" "(" term ")" -> bnot_term
@@ -31,7 +32,8 @@ Rule = r"""
     | "y" -> y
     | "~" factor -> bnot
 
-%import common.NUMBER
+?integer: /\d{1,8}/
+
 %import common.WS
 %ignore WS           
 """
@@ -90,6 +92,9 @@ class MBATransformer(Transformer):
       return '~' + args[0]
     assert args[0][0] == '~', "Invalid expression"
     return args[0][1]   # double negation
+  
+  def integer(self, args):
+    return args[0]
 
 boolean = lambda x: 1 if x else 0
 def _handle_uop(op: str, a: List[int] | int) -> List[int] | int:

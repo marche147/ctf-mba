@@ -3,13 +3,14 @@ FROM python:bookworm
 ARG nproc=32
 
 RUN apt-get update && apt-get upgrade -y
-RUN apt-get install -y git cmake build-essential
+RUN apt-get install -y git cmake build-essential xinetd
 RUN pip3 install -U pip && pip3 install lark
 
 WORKDIR /root
 RUN git clone https://github.com/Z3Prover/z3
 ADD patches/new-tactic.patch /root
 ADD src/server.py /root/
+ADD ./problem /etc/xinet.d
 RUN chmod +x /root/server.py
 
 ENV nproc=${nproc}
@@ -25,4 +26,5 @@ RUN mkdir build && cd build && cmake \
   ..
 RUN cd build && make -j${nproc} && make install
 
-CMD ["python3", "-u", "/root/server.py"]
+# CMD ["python3", "-u", "/root/server.py"]
+CMD ["/usr/sbin/xinetd", "-dontfork"]
