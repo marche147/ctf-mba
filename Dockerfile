@@ -9,9 +9,6 @@ RUN pip3 install -U pip && pip3 install lark
 WORKDIR /root
 RUN git clone https://github.com/Z3Prover/z3
 ADD patches/new-tactic.patch /root
-ADD src/server.py /root/
-ADD ./problem /etc/xinet.d
-RUN chmod +x /root/server.py
 
 ENV nproc=${nproc}
 WORKDIR /root/z3
@@ -26,5 +23,10 @@ RUN mkdir build && cd build && cmake \
   ..
 RUN cd build && make -j${nproc} && make install
 
-# CMD ["python3", "-u", "/root/server.py"]
+ADD src/server.py /root/
+ADD ./problem /etc/xinetd.d/
+ADD ./run.sh /root/
+RUN chmod +x /root/server.py /root/run.sh
+
+# CMD ["/root/run.sh"]
 CMD ["/usr/sbin/xinetd", "-dontfork"]

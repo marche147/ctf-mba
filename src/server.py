@@ -9,7 +9,6 @@ BITSET = {
   'y': [0, 1, 0, 1],
 }
 
-## TODO: maybe we make a basis that is larger abs(v) so that 10**8*abs(v) can overflow?
 Rule = r"""
 ?start: expr -> expression
 
@@ -216,6 +215,10 @@ class MBAExpr(object):
     for c, t in self._coterms:
       expr += _get_bitvecval(c, nbits) * t.to_z3expr(nbits)
     return expr
+  
+  @property
+  def coterms(self) -> List[Tuple[int, BoolFunction]]:
+    return self._coterms
 
 T = MBATransformer()
 def parse(expr: str) -> MBAExpr:
@@ -243,7 +246,7 @@ def serve_challenge():
   FLAG = os.environ.get('FLAG', 'aliyunctf{this_is_a_test_flag}')
 
   expr = input("Please enter the expression: ")
-  if len(expr) > 100:
+  if len(expr) > 200:
     print("Expression is too long")
     exit(1)
 
@@ -253,8 +256,12 @@ def serve_challenge():
     print("Could not parse the expression")
     exit(1)
 
+  if len(mba.coterms) > 15:
+    print("Too many terms")
+    exit(1)
+
   signal.signal(signal.SIGALRM, handler)
-  signal.alarm(30)
+  signal.alarm(60)
 
   t = z3.Then(
     z3.Tactic('mba'),
