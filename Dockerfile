@@ -1,10 +1,4 @@
-FROM python:bookworm
-
-## Switch source
-RUN rm /etc/apt/sources.list.d/*
-RUN echo "deb https://mirrors.tuna.tsinghua.edu.cn/debian/ bookworm main contrib non-free non-free-firmware" >> /etc/apt/sources.list
-RUN echo "deb https://mirrors.tuna.tsinghua.edu.cn/debian/ bookworm-updates main contrib non-free non-free-firmware" >> /etc/apt/sources.list
-RUN echo "deb https://mirrors.tuna.tsinghua.edu.cn/debian-security/ bookworm-security main contrib non-free non-free-firmware" >> /etc/apt/sources.list
+FROM dockerproxy.net/library/python:bookworm
 
 RUN apt-get update && apt-get upgrade -y
 RUN apt-get install -y git cmake build-essential xinetd
