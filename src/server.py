@@ -2,7 +2,7 @@
 
 from lark import Lark, Transformer
 from typing import Any, List, Tuple, Self
-import z3, signal, os
+import z3, os
 
 BITSET = {
   'x': [0, 0, 1, 1],
@@ -229,20 +229,17 @@ def parse_term(term: str) -> BoolFunction:
 
 def check_expression(t: z3.Tactic, e: MBAExpr) -> bool:
   expr = e.to_z3expr(64)
+  s = t.solver()
+  s.add(expr != expr)
 
-  g = z3.Goal()
-  g.add([expr != expr])
-  new_goals = t(g)[0]
-
-  if len(new_goals) == 0:
-    return False
-  return z3.is_false(new_goals[0])
+  s.set('timeout', 30000)   # 30 seconds
+  r = s.check()
+  if r == z3.unknown:
+    print("Solver timed out")
+    exit(1)
+  return r == z3.unsat
 
 def serve_challenge():
-  def handler(signum, frame):
-    print("Timeout")
-    exit(1)
-
   FLAG = os.environ.get('FLAG', 'aliyunctf{this_is_a_test_flag}')
 
   expr = input("Please enter the expression: ")
@@ -259,9 +256,6 @@ def serve_challenge():
   if len(mba.coterms) > 15:
     print("Too many terms")
     exit(1)
-
-  signal.signal(signal.SIGALRM, handler)
-  signal.alarm(60)
 
   t = z3.Then(
     z3.Tactic('mba'),
