@@ -18,10 +18,10 @@ index 9009e6fa5..72bd2cfa1 100644
  )
 diff --git a/src/tactic/bv/mba_tactic.cpp b/src/tactic/bv/mba_tactic.cpp
 new file mode 100644
-index 000000000..5f4cf15f8
+index 000000000..f3796c1e7
 --- /dev/null
 +++ b/src/tactic/bv/mba_tactic.cpp
-@@ -0,0 +1,391 @@
+@@ -0,0 +1,381 @@
 +#include "tactic/tactic.h"
 +#include "tactic/tactical.h"
 +#include "tactic/bv/mba_tactic.h"
@@ -90,7 +90,6 @@ index 000000000..5f4cf15f8
 +    }
 +    return result;
 +  }
-+
 +};
 +
 +
@@ -103,7 +102,6 @@ index 000000000..5f4cf15f8
 +  ast_manager & m;
 +
 +  mba_expr(ast_manager & m) : m(m) { }
-+
 +};
 +
 +class mba_tactic : public tactic {
@@ -195,7 +193,6 @@ index 000000000..5f4cf15f8
 +    if (!is_app(e))
 +      return false;
 +
-+
 +    app * a = to_app(e);
 +    if (bv().is_bv_not(a)) {
 +      bf.negated = !bf.negated;
@@ -223,11 +220,9 @@ index 000000000..5f4cf15f8
 +    if (!is_app(e))
 +      return false;
 +
-+
 +    app * a = to_app(e);
 +    if (bv().is_bv_add(a)) {
 +      unsigned num_args = a->get_num_args();
-+
 +      
 +      if (num_args != 2)
 +        return false;
@@ -241,7 +236,6 @@ index 000000000..5f4cf15f8
 +        return false;
 +      return true;
 +    } else if (bv().is_bv_sub(a)) {
-+
 +      unsigned num_args = a->get_num_args();
 +      if (num_args != 2)
 +        return false;
@@ -273,7 +267,6 @@ index 000000000..5f4cf15f8
 +      mba.terms.push_back(std::make_tuple(c, bf));
 +      return true;
 +    } else if (bv().is_numeral(a)) {
-+
 +      expr * indet = mk_indeterminate("x");
 +      expr * term = bv().mk_bv_not(bv().mk_bv_and(indet,bv().mk_bv_not(indet)));
 +
@@ -335,9 +328,7 @@ index 000000000..5f4cf15f8
 +      for (size_t j = 0; j < 4; j++) {
 +        basis_comb[j] += basis[truth_value][j] * coeff;
 +      }
-+
 +    }
-+
 +    return mk_expressiion(basis_comb);
 +  }
 +
@@ -381,7 +372,6 @@ index 000000000..5f4cf15f8
 +        break;
 +      }
 +      expr * curr = g.form(idx);
-+
 +      if (simplify_form(curr, new_curr)) {
 +        g.update(idx, new_curr, new_pr, g.dep(idx));
 +      }

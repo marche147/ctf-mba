@@ -72,7 +72,6 @@ struct bool_function {
     }
     return result;
   }
-
 // {{{
 #ifdef MARKER
   friend std::ostream & operator<<(std::ostream & os, const bool_function & bf) {
@@ -107,7 +106,6 @@ struct mba_expr {
   ast_manager & m;
 
   mba_expr(ast_manager & m) : m(m) { }
-
 // {{{
 #ifdef MARKER
   friend std::ostream& operator<<(std::ostream & os, const mba_expr & mba) {
@@ -226,7 +224,6 @@ class mba_tactic : public tactic {
   bool build_bool_function(expr * e, bool_function & bf) {
     if (!is_app(e))
       return false;
-
 // {{{
 #ifdef MARKER
     TRACE("mba", tout << "build_bool_function " << mk_pp(e, m()) << "\n";);
@@ -259,7 +256,6 @@ class mba_tactic : public tactic {
   bool build_mba_expr(expr * e, mba_expr & mba, bool negative) {
     if (!is_app(e))
       return false;
-
 // {{{
 #ifdef MARKER
     TRACE("mba", tout << "build_mba_expr " << mk_pp(e, m()) << "\n";);
@@ -269,7 +265,6 @@ class mba_tactic : public tactic {
     app * a = to_app(e);
     if (bv().is_bv_add(a)) {
       unsigned num_args = a->get_num_args();
-
 // {{{
 #ifdef MARKER 
       TRACE("mba", tout << "bv_add " << num_args << "\n";);
@@ -288,7 +283,6 @@ class mba_tactic : public tactic {
         return false;
       return true;
     } else if (bv().is_bv_sub(a)) {
-
 // {{{
 #ifdef MARKER 
       TRACE("mba", tout << "bv_sub\n";);
@@ -335,7 +329,6 @@ class mba_tactic : public tactic {
       TRACE("mba", tout << "bv_numeral\n";);
 #endif
 // }}} 
-
       expr * indet = mk_indeterminate("x");
       expr * term = bv().mk_bv_not(bv().mk_bv_and(indet,bv().mk_bv_not(indet)));
 
@@ -407,7 +400,6 @@ class mba_tactic : public tactic {
       for (size_t j = 0; j < 4; j++) {
         basis_comb[j] += basis[truth_value][j] * coeff;
       }
-
 // {{{
 #ifdef MARKER
       TRACE("mba", 
@@ -422,7 +414,6 @@ class mba_tactic : public tactic {
 #endif
 // }}}
     }
-
 // {{{
 #ifdef MARKER
     TRACE("mba", 
@@ -482,7 +473,6 @@ class mba_tactic : public tactic {
         break;
       }
       expr * curr = g.form(idx);
-
 // {{{
 #ifdef MARKER
       TRACE("mba", 
