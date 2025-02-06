@@ -31,5 +31,6 @@ ADD ./problem /etc/xinetd.d/
 ADD ./run.sh /root/
 RUN chmod +x /root/server.py /root/run.sh
 
+EXPOSE 9048
 # CMD ["/root/run.sh"]
 CMD ["/usr/sbin/xinetd", "-dontfork"]
